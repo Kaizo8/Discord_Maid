@@ -6,7 +6,8 @@ const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMembers
     ]
 });
 
@@ -96,6 +97,37 @@ After: ${newMessage.content}
         `
     );
 });
+
+client.on('guildMemberAdd', async member => {
+
+    const logChannel =
+        member.guild.channels.cache.find(
+            channel => channel.name === 'member-logs'
+        );
+
+    if (!logChannel) return;
+
+    await logChannel.send(
+        `🎉 ${member.user.tag} joined the server!`
+    );
+
+});
+
+client.on('guildMemberRemove', async member => {
+
+    const logChannel =
+        member.guild.channels.cache.find(
+            channel => channel.name === 'member-logs'
+        );
+
+    if (!logChannel) return;
+
+    await logChannel.send(
+        `👋 ${member.user.tag} left the server.`
+    );
+
+});
+
 
 client.login(process.env.TOKEN);
 
